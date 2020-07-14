@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?> <!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cm.ch03.oo.OrdersUserMapper">
+    <!-- 需求：查询订单信息，关联查询创建订单的用户信息 -->
+    <!--type属性：真正返回的类型 id属性：作为resultMap唯一标识 -->
+    <resultMap type="OrdersCustom" id="orderUserResultMap">
+        <!--
+             配置订单信息
+             id:指定查询列中唯一标识
+              result:表中普通字段
+              其中：column 对应表中的列名 property 类映射到OrdersCustom类中的哪个属性
+        -->
+        <id column="id" property="id" />
+        <result column="user_id" property="userId"/>
+        <result column="number" property="number"/>
+        <result column="createtime" property="createtime"/>
+        <result column="note" property="note"/>
+        <!--配置用户信息
+        OrdersCustom关联了UserCustom :用association体现一对一的映射关系
+        property属性：将关联查询的用户信息映射到OrdersCustom中的哪个属性
+        javaType属性：属性的类型，可使用别名
+        -->
+        <association property="userCustom" javaType="UserCustom">
+            <id column="user_id" property="id" />
+            <result column="username" property="username"/>
+            <result column="birthday" property="birthday"/>
+            <result column="sex" property="sex"/>
+            <result column="address" property="address"/>
+        </association> <
+        /resultMap>
+        <select id="selectOrderUserResultMap" resultMap="orderUserResultMap">
+            select orders.*,user.sex,user.address,user.username,user.birthday
+            from orders,user
+            where orders.user_id = user.id
+        </select>
+</mapper>
